@@ -1,6 +1,6 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-Working live website here: https://gifted-bartik-3cecbd.netlify.com/
+Working live website here: https://simple-route-creator.netlify.com/
 
 ## Available Scripts
 
