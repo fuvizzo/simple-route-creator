@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import MapArea from './components/MapArea';
 import RouteList from '../src/components/RouteList';
-import { Drawer } from '@material-ui/core';
+import { Drawer, IconButton, Snackbar } from '@material-ui/core';
 import constants from './constants';
-import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import styled from 'styled-components';
 import { StylesProvider } from '@material-ui/styles';
+import MuiAlert from '@material-ui/lab/Alert';
 
 const MenuButton = styled(IconButton)`
   && {
@@ -20,20 +20,30 @@ const MenuButton = styled(IconButton)`
   }
 `;
 
+const HintsUl = styled('ul')`
+  padding: 0;
+`;
+
 function App() {
   console.count('App');
-  const [state, setState] = useState({
+  const [uiState, setUIState] = useState({
     drawer: {
       open: false,
     },
+    snackbar: {
+      open: true,
+    },
+  });
+
+  const [mapState, setMapState] = useState({
     mapData: { map: null, points: new Map(), path: null },
   });
 
   const handleSetRoute = route => {
-    setState({
-      ...state,
+    setMapState({
+      ...mapState,
       ...{
-        mapData: { ...state.mapData, ...{ points: route } },
+        mapData: { ...mapState.mapData, ...{ points: route } },
       },
     });
   };
@@ -46,8 +56,8 @@ function App() {
       return;
     }
 
-    setState({
-      ...state,
+    setUIState({
+      ...uiState,
       ...{
         drawer: {
           open,
@@ -55,6 +65,18 @@ function App() {
       },
     });
   };
+
+  const closeSnackBar = _ => {
+    setUIState({
+      ...uiState,
+      ...{
+        snackbar: {
+          open: false,
+        },
+      },
+    });
+  };
+
   return (
     <StylesProvider injectFirst>
       <MenuButton aria-label="menu" onClick={toggleDrawer(true)}>
@@ -62,12 +84,30 @@ function App() {
       </MenuButton>
       <Drawer
         anchor={constants.RouteList.DRAWER_ANCHOR}
-        open={state.drawer.open}
+        open={uiState.drawer.open}
         onClose={toggleDrawer(false)}
       >
-        <RouteList route={state.mapData.points} setRoute={handleSetRoute} />
+        <RouteList route={mapState.mapData.points} setRoute={handleSetRoute} />
       </Drawer>
-      <MapArea mapData={state.mapData} setRoute={handleSetRoute} />
+      <MapArea mapData={mapState.mapData} setRoute={handleSetRoute} />
+      <Snackbar
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        onClose={closeSnackBar}
+        open={uiState.snackbar.open}
+        autoHideDuration={10000}
+      >
+        <MuiAlert severity="info" elevation={6} variant="filled">
+          Hints:
+          <HintsUl>
+            <li>double-click to place a marker</li>
+            <li>click&drag to move it</li>
+            <li>single click to remove it</li>
+          </HintsUl>
+        </MuiAlert>
+      </Snackbar>
     </StylesProvider>
   );
 }
