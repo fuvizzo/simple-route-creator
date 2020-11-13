@@ -40,5 +40,5 @@ const MapArea = props => {
 };
 
 export default scriptLoader([
-  `https://maps.googleapis.com/maps/api/js?key= ${constants.Map.API_KEY}`,
+  `https://maps.googleapis.com/maps/api/js?key= ${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`,
 ])(MapArea);
